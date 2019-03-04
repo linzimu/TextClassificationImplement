@@ -1,29 +1,34 @@
 # 1 简介
 ['达观杯'文本智能处理挑战赛官网](http://www.dcjingsai.com/common/cmpt/“达观杯”文本智能处理挑战赛_竞赛信息.html)<br>
-&#8195;该库用于'达观杯'比赛的文本分类任务的基础实现，主要包括机器学习(ml)和深度学习(dl)两大部分，机器学习部分基于sklearn/lightgbm包实现，深度学习部使用pytorch深度学习框架。其中，机器学习部分主要包含特征工程和分类器两大部分，特征工程部分主要针对文本分类任务的 hash/lsa/lda/doc2vec特征提取/特征选择/特征组合/特征构造进行了实现，而分类器部分主要有逻辑回归/SVM/随机森林/Bagging/Adaboost/GBDT/Xgboost/LightGBM等。深度学习主要实现了word2vec/构建lstm模型/训练可视化等。（注：此库只是基础实现，并不是最优！！！）<br>
+&#8195;该库用于'达观杯'比赛的文本分类任务的实现，主要包括机器学习(ml)和深度学习(dl)两大部分，机器学习部分基于sklearn/lightgbm包实现，深度学习部使用pytorch深度学习框架。其中，机器学习部分主要包含特征工程和分类器两大部分，特征工程部分主要针对文本分类任务的 lsa/lda/doc2vec特征提取/特征选择/特征组合/特征构造进行了实现，而分类器部分主要有逻辑回归/SVM/随机森林/Bagging/Adaboost/GBDT/Xgboost/LightGBM等。深度学习主要实现了word2vec/构建lstm模型/训练可视化等。<br>
 
-# 2 ml（机器学习）
+# ml(机器学习)
 - 1）**运行环境**<br>
 sklearn/xgboost/lightgbm<br>
-
 - 2）**文件夹说明**<br>
-[data]:用于存放原始数据集。([数据集下载链接](https://pan.baidu.com/s/17UjEEcB2taT_HvU1FC1bCQ))<br>
-[features]:用于存放特征工程的代码以及生成的特征文件。<br>
-[code]:用于存放训练的代码。<br>
-[results]:用于存放测试集的训练结果，以便提交给比赛官方。<br>
-[for beginner]：用较为简单的代码格式帮助代码熟练度不够的同学入门，涉及自动调参。(选看)<br>
+**data**:<br>
+（a）存放[原始数据集](https://pan.baidu.com/s/17UjEEcB2taT_HvU1FC1bCQ)<br>
+（b）处理原始数据集的程序文件及其生成文件<br>
+（c）文件夹tmp，用于存放从原始数据集中提取到的特征数据<br>
+**features**:存放特征工程的代码<br>
+**code**:存放训练的代码<br>
+**results**:存放测试集的训练结果，以便提交给比赛官方。<br>
 
 - 3）**使用案例**<br>
 （1）生成tfidf特征<br>
-直接运行features文件夹中的**tfidf.py**;<br>
-（2）生成lsa特征<br>
-运行features文件夹中的**lsa.py**；(注：运行前请确保tfidf特征已经生成)<br>
-（3）生成lda特征<br>
-运行features文件夹中的**lda.py**；(注：运行前请确保tf特征已经生成)<br>
-（4）使用逻辑回归分类器进行训练<br>
-修改code文件夹中的**sklearn_config.py**中的*clf_name='lr'*,然后运行**sklearn_train.py**即开始训练。<br>
-（5）使用lgb进行训练<br>
-修改code文件夹中的**lgb.py**中的*features_path*，然后直接运行**lgb.py**即可开始训练。<br>
+运行features文件夹中的tfidf.py（对原始数据进行tfidf特征提取。tfidf特征提取时，去除掉除词频≤3，大于90%的单词）；<br>
+（2）对特征进行嵌入式选择<br>
+运行features文件夹中的feature\_select.py(对tfidf提取的特征通过L2正则进行特征选择)<br>
+（3）生成lsa特征<br>
+运行features文件夹中的lsa.py；(对进行过特征选择的特征数据进行lsa特征提取)<br>
+（4）生成lda特征<br>
+运行features文件夹中的lda.py；(对进行过特征选择的特征数据进行lda特征提取)<br>
+（5）生成doc2vec特征<br>
+运行features文件夹中的doc2vec.py；(对进原始数据进行doc2vec特征提取)<br>
+（6）进行特征融合<br>
+运行ensemble.py;（对提取的lda、lsa、doc2vec特征数据进行融合）<br>
+（7）使用lgb进行训练并进行结果预测<br>
+运行code文件夹中的lgb.py；（用lightgbm对融合后的数据进行训练，最后得到预测的准确率为**76.17%**）<br>
 
 - 4）**提高模型分数关键**<br>
 （1）特征工程：<br>
@@ -59,5 +64,3 @@ pytorch/visdom
 <div align=center>训练集loss
 <div align=center><img width="584" height="375" src="https://github.com/MLjian/TextClassificationImplement/blob/master/dl/n_pad/实验数据/acc.png"/></div>
 <div align=center>验证集准确率
-
-
