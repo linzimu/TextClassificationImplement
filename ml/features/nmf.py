@@ -15,7 +15,7 @@ f_tfidf = open(tfidf_path, 'rb')
 x_train, y_train, x_test = pickle.load(f_tfidf)
 f_tfidf.close()
 """特征降维：nmf"""
-#print("nmf......")
+# print("nmf......")
 num_features = 200
 nmf = NMF(n_components=num_features)
 x_train = nmf.fit_transform(x_train)
@@ -29,6 +29,4 @@ pickle.dump(data, f_data)
 f_data.close()
 
 t_end = time.time()
-#print("nmf特征完成，共耗时：{}min".format((t_end-t_start)/60))
-
-
+# print("nmf特征完成，共耗时：{}min".format((t_end-t_start)/60))

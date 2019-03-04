@@ -1,39 +1,37 @@
 # -*- coding: utf-8 -*-
 """
 @brief : lda/lsa/doc2vec三种特征进行特征融合，并将结果保存至本地
-@author: Jian
 """
 import numpy as np
 import pickle
 import time
 
-t_start = time.time()
 
-"""=====================================================================================================================
-2 读取lda/lsa/doc2vec特征，并对这三种特征进行拼接融合
-"""
-f1 = open('./data_lda.pkl', 'rb')
-x_train_1, y_train, x_test_1 = pickle.load(f1)
-f1.close()
+def feature_fusion():
+    t1 = time.time()
 
-f2 = open('./data_s_lsvc_l2_143w_lsa.pkl', 'rb')
-x_train_2, y_train, x_test_2 = pickle.load(f2)
-f2.close()
+    print('加载lda、lsa、doc2vec特征，同时进行特征融合。。。')
+    with open('../data/tmp/feature_tfidf_select_lda.pkl', 'rb') as f:
+        X_train_1, y_train, X_test_1 = pickle.load(f)
+    with open('../data/tmp/feature_tfidf_select_lsa.pkl', 'rb') as f:
+        X_train_2, _, X_test_2 = pickle.load(f)
+    with open('../data/tmp/feature_doc2vec_25.pkl', 'rb') as f:
+        X_train_3, _, X_test_3 = pickle.load(f)
+    # 横向合并特征构成新的特征
+    X_train = np.concatenate((X_train_1, X_train_2, X_train_3), axis=1)
+    X_test = np.concatenate((X_test_1, X_test_2, X_test_3), axis=1)
+    t2 = time.time()
+    print('加载lda、lsa、doc2vec特征，同时进行特征融合用时：{}s'.format(t2 - t1))
 
-f3 = open('./data_doc2vec_25.pkl', 'rb')
-x_train_3, _, x_test_3 = pickle.load(f3)
-f3.close()
+    print('持久化数据。。。')
+    with open('../data/tmp/feature_ensemble.pkl', 'wb') as f:
+        data = (X_train, y_train, X_test)
+        pickle.dump(data, f)
+    t3 = time.time()
+    print('持久化数据共用时：{}s'.format(t3 - t2))
 
-x_train = np.concatenate((x_train_1, x_train_2, x_train_3), axis=1)
-x_test = np.concatenate((x_test_1, x_test_2, x_test_3), axis=1)
+    print('共用时：{}s'.format(t3 - t1))
 
-"""=====================================================================================================================
-2 将融合后的特征，保存至本地
-"""
-data = (x_train, y_train, x_test)
-fp = open('./data_ensemble.pkl', 'wb')
-pickle.dump(data, fp)
-fp.close()
 
-t_end = time.time()
-print("已将原始数据数字化为融合的特征，共耗时：{}min".format((t_end-t_start)/60))
+if __name__ == '__main__':
+    feature_fusion()

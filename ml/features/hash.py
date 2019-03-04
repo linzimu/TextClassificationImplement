@@ -13,7 +13,7 @@ t_start = time.time()
 """=====================================================================================================================
 1 加载原始数据
 """
-df_train = pd.read_csv('../data/train_set.csv')
+df_train = pd.read_csv('../data/all_data.csv')
 df_train.drop(columns='article', inplace=True)
 df_test = pd.read_csv('../data/test_set.csv')
 df_test.drop(columns='article', inplace=True)

@@ -2,14 +2,13 @@
 """
 @brief : 根据features_path中的数据，对机器学习模型进行训练，并对测试集进行预测，并将结果保存至本地
 @How to use：使用前，先对sklearn_config文件进行参数配置，然后才能运行此文件进行学习训练
-@author: Jian
 """
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import f1_score
 import time
 import pickle
-from sklearn_config import features_path, clf_name, clf, status_vali
+import pandas as pd
+from sklearn.metrics import f1_score
+from sklearn.model_selection import train_test_split
+from TextClassificationImplement.ml.code.sklearn_config import features_path, clf_name, clf, status_vali
 
 t_start = time.time()
 
@@ -41,7 +40,7 @@ if status_vali:
 4 对测试集进行预测;将预测结果转换为官方标准格式；并将结果保存至本地
 """
 y_test = clf.predict(x_test) + 1
-df_result = pd.DataFrame(data={'id':range(102277), 'class': y_test.tolist()})
+df_result = pd.DataFrame(data={'id': range(102277), 'class': y_test.tolist()})
 result_path = '../results/' + features_path.split('/')[-1] + '_sklearn_' + clf_name + '.csv'
 df_result.to_csv(result_path, index=False)
 

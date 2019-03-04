@@ -19,7 +19,7 @@ w2i_path = '../word2vec/word_seg_word_idx_dict.pkl'
 # 1 加载数据集
 #=======================================================================================================================
 if train:
-    data_path = './data_ori/train_set.csv'
+    data_path = './data_ori/all_data.csv'
 else:
     data_path = './data_ori/test_set.csv'
 
