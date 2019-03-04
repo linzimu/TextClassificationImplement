@@ -2,6 +2,10 @@
 ['达观杯'文本智能处理挑战赛官网](http://www.dcjingsai.com/common/cmpt/“达观杯”文本智能处理挑战赛_竞赛信息.html)<br>
 &#8195;该库用于'达观杯'比赛的文本分类任务的实现，主要包括机器学习(ml)和深度学习(dl)两大部分，机器学习部分基于sklearn/lightgbm包实现，深度学习部使用pytorch深度学习框架。其中，机器学习部分主要包含特征工程和分类器两大部分，特征工程部分主要针对文本分类任务的 lsa/lda/doc2vec特征提取/特征选择/特征组合/特征构造进行了实现，而分类器部分主要有逻辑回归/SVM/随机森林/Bagging/Adaboost/GBDT/Xgboost/LightGBM等。深度学习主要实现了word2vec/构建lstm模型/训练可视化等。<br>
 
+# 2 数据说明
+- 1）训练数据共包含102277篇文章，每篇文章包含id,article,word_seg,class属性。
+
+
 # ml(机器学习)
 - 1）**运行环境**<br>
 sklearn/xgboost/lightgbm<br>
@@ -16,9 +20,9 @@ sklearn/xgboost/lightgbm<br>
 
 - 3）**使用案例**<br>
 （1）生成tfidf特征<br>
-运行features文件夹中的tfidf.py（对原始数据进行tfidf特征提取。tfidf特征提取时，去除掉除词频≤3，大于90%的单词）；<br>
+运行features文件夹中的tfidf.py（对原始数据进行tfidf特征提取得到2095922个特征词。tfidf特征提取时，去除掉除词频≤3，大于90%的单词）；<br>
 （2）对特征进行嵌入式选择<br>
-运行features文件夹中的feature\_select.py(对tfidf提取的特征通过L2正则进行特征选择)<br>
+运行features文件夹中的feature\_select.py(对tfidf提取的特征通过L2正则进行特征选择，得到675311个新特征)<br>
 （3）生成lsa特征<br>
 运行features文件夹中的lsa.py；(对进行过特征选择的特征数据进行lsa特征提取)<br>
 （4）生成lda特征<br>
