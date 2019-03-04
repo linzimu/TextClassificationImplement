@@ -28,7 +28,7 @@ start_time = time.time()
 #=======================================================================================================================
 
 print("准备数据................\n")
-df_train = pd.read_csv('../data/data_ori/train_set.csv')
+df_train = pd.read_csv('../data/data_ori/all_data.csv')
 df_test = pd.read_csv('../data/data_ori/test_set.csv')
 sentences_train = list(df_train.loc[:, 'word_seg'].apply(sentence2list))
 sentences_test = list(df_test.loc[:, 'word_seg'].apply(sentence2list))

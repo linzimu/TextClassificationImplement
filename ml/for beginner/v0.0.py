@@ -13,7 +13,7 @@ print("开始...............")
 # @代码功能简介：从硬盘上读取已下载好的数据，并进行简单处理
 # @知识点定位：数据预处理
 #====================================================================================================================
-df_train = pd.read_csv('../data/train_set.csv')
+df_train = pd.read_csv('../data/all_data.csv')
 df_test = pd.read_csv('../data/test_set.csv')
 df_train.drop(columns=['article', 'id'], inplace=True)
 df_test.drop(columns=['article'], inplace=True)

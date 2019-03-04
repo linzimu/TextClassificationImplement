@@ -25,7 +25,7 @@ time_start = time.time()
 ========================================================================================================================
 """
 if train:
-    data_path = './data_ori/train_set.csv'
+    data_path = './data_ori/all_data.csv'
 else:
     data_path = './data_ori/test_set.csv'
 

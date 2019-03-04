@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 @brief : 将原始数据数字化为doc2vec特征，并将结果保存至本地
-@author: Jian
 """
 import pandas as pd
 import numpy as np
@@ -9,55 +8,60 @@ from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 import time
 import pickle
 
-t_start = time.time()
-
-"""=====================================================================================================================
-0 辅助函数 
-"""
-
 
 def sentence2list(sentence):
     s_list = sentence.strip().split()
     return s_list
 
 
-"""=====================================================================================================================
-1 读取原始数据，并进行简单处理
-"""
-df_train = pd.read_csv('../data/train_set.csv')
-df_train.drop(columns='article', inplace=True)
-df_test = pd.read_csv('../data/test_set.csv')
-df_test.drop(columns='article', inplace=True)
-df_all = pd.concat(objs=[df_train, df_test], axis=0, sort=True)
-y_train = (df_train['class'] - 1).values
+def feature_doc2vec():
+    t1 = time.time()
+    print('加载数据和分词。。。')
+    with open('../data/test_data.pkl', 'rb') as f:
+        X_test, y_test = pickle.load(f)
+    with open('../data/train_data.pkl', 'rb') as f:
+        X_train, y_train = pickle.load(f)
+    # axis, 取0：纵向合并；取1：横向合并
+    X_all = pd.concat(objs=[X_train, X_test], axis=0, sort=True)
+    X_all['word_list'] = X_all.apply(sentence2list)
+    texts = X_all['word_list'].tolist()
+    t2 = time.time()
+    print('加载数据和分词用时：{}s'.format(t2 - t1))
 
-df_all['word_list'] = df_all['word_seg'].apply(sentence2list)
-texts = df_all['word_list'].tolist()
+    print('抽取句子特征。。。')
+    # 这里将测试集和训练集一起做句子特征提取
+    documents = [TaggedDocument(doc, [i]) for i, doc in enumerate(texts)]
+    model = Doc2Vec(documents, vector_size=200, window=5, min_count=3, workers=4, epochs=25)
+    docvecs = model.docvecs
+    X_train, X_test = [], []
+    for i in range(0, 102277):
+        if i < 71593:
+            X_train.append(docvecs[i])
+        else:
+            X_test.append(docvecs[i])
+    X_train = np.array(X_train)
+    X_test = np.array(X_test)
+    t3 = time.time()
+    print('抽取句子特种用时：{}s'.format(t3 - t2))
 
-"""=====================================================================================================================
-2 doc2vec
-"""
-documents = [TaggedDocument(doc, [i]) for i, doc in enumerate(texts)]
-model = Doc2Vec(documents, vector_size=200, window=5, min_count=3, workers=4, epochs=25)
-docvecs = model.docvecs
+    print('持久化数据。。。')
+    with open('../data/tmp/feature_doc2vec_25.pkl', 'wb') as f:
+        data = (X_train, y_train, X_test)
+        pickle.dump(data, f)
+    t4 = time.time()
+    print('持久化数据用时：{}s'.format(t4 - t3))
 
-x_train = []
-for i in range(0, 102277):
-    x_train.append(docvecs[i])
-x_train = np.array(x_train)
+    print('总用时：{}s'.format(t4 - t1))
 
-x_test = []
-for j in range(102277, 204554):
-    x_test.append(docvecs[j])
-x_test = np.array(x_test)
 
-"""=====================================================================================================================
-3 将doc2vec特征保存至本地
-"""
-data = (x_train, y_train, x_test)
-f_data = open('./data_doc2vec_25.pkl', 'wb')
-pickle.dump(data, f_data)
-f_data.close()
-
-t_end = time.time()
-print("已将原始数据数字化为doc2vec特征，共耗时：{}min".format((t_end-t_start)/60))
+if __name__ == '__main__':
+    feature_doc2vec()
+    """
+        加载数据和分词。。。
+        加载数据和分词用时：16.51794695854187s
+        抽取句子特征。。。
+        抽取句子特种用时：2787.725296974182s
+        持久化数据。。。
+        持久化数据用时：2.6352829933166504s
+        总用时：2806.8785269260406s
+    """

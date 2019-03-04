@@ -1,31 +1,38 @@
 # -*- coding: utf-8 -*-
 """
 @brief : 将tfidf特征降维为lsa特征，并将结果保存至本地
-@author: Jian
 """
 from sklearn.decomposition import TruncatedSVD
 import pickle
 import time
 
-t_start = time.time()
 
-"""读取tfidf特征"""
-tfidf_path = './data_tfidf_selected_lsvc_l2_143w.pkl'
-f_tfidf = open(tfidf_path, 'rb')
-x_train, y_train, x_test = pickle.load(f_tfidf)
-f_tfidf.close()
+def feature_lsa():
+    t1 = time.time()
 
-"""特征降维：lsa"""
-print("lsa......")
-lsa = TruncatedSVD(n_components=200)
-x_train = lsa.fit_transform(x_train)
-x_test = lsa.transform(x_test)
+    print('加载feature_tfidf_select。。。')
+    tfidf_path = '../data/tmp/feature_tfidf_select_LSVC_l2_675311.pkl'
+    with open(tfidf_path, 'rb') as f:
+        X_train, y_train, X_test = pickle.load(f)
+    t2 = time.time()
+    print('加载feature_tfidf_select用时：{}s'.format(t2 - t1))
 
-"""将lsa特征保存至本地"""
-data = (x_train, y_train, x_test)
-f_data = open('./data_s_lsvc_l2_143w_lsa.pkl', 'wb')
-pickle.dump(data, f_data)
-f_data.close()
+    print("抽取lsa特征。。。")
+    lsa = TruncatedSVD(n_components=200)
+    X_train = lsa.fit_transform(X_train)
+    X_test = lsa.transform(X_test)
+    t3 = time.time()
+    print('抽取lsa特征用时：{}s'.format(t3 - t2))
 
-t_end = time.time()
-print("lsa特征完成，共耗时：{}min".format((t_end-t_start)/60))
+    print('持久化数据。。。')
+    with open('../data/tmp/feature_tfidf_select_lsa.pkl', 'wb') as f:
+        data = (X_train, y_train, X_test)
+        pickle.dump(data, f)
+    t4 = time.time()
+    print('持久化数据用时：{}s'.format(t4 - t3))
+
+    print("共用时：{}s".format(t4 - t1))
+
+
+if __name__ == '__main__':
+    feature_lsa()

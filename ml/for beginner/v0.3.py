@@ -14,7 +14,7 @@ import time
 print("开始......")
 t_start = time.time()
 
-df_train = pd.read_csv('../data/train_set.csv')
+df_train = pd.read_csv('../data/all_data.csv')
 df_test = pd.read_csv('../data/test_set.csv')
 
 df_train_x = df_train['word_seg']

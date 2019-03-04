@@ -1,40 +1,52 @@
 # -*- coding: utf-8 -*-
 """
 @brief : 将原始数据数字化为tfidf特征，并将结果保存至本地
-@author: Jian
 """
-import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pickle
 import time
 
-t_start = time.time()
 
-"""=====================================================================================================================
-1 数据预处理
-"""
-df_train = pd.read_csv('../data/train_set.csv')
-df_train.drop(columns='article', inplace=True)
-df_test = pd.read_csv('../data/test_set.csv')
-df_test.drop(columns='article', inplace=True)
-f_all = pd.concat(objs=[df_train, df_test], axis=0, sort=True)
-y_train = (df_train['class'] - 1).values
+def get_tfidf_feature():
+    t1 = time.time()
 
-"""=====================================================================================================================
-2 特征工程
-"""
-vectorizer = TfidfVectorizer(ngram_range=(1, 2), min_df=3, max_df=0.9, sublinear_tf=True)
-vectorizer.fit(df_train['word_seg'])
-x_train = vectorizer.transform(df_train['word_seg'])
-x_test = vectorizer.transform(df_test['word_seg'])
+    print('加载数据。。。')
+    with open('../data/test_data.pkl', 'rb') as f:
+        X_test, y_test = pickle.load(f)
+    with open('../data/train_data.pkl', 'rb') as f:
+        X_train, y_train = pickle.load(f)
+    t2 = time.time()
+    print('加载数据用时：{}s'.format(t2 - t1))
 
-"""=====================================================================================================================
-3 保存至本地
-"""
-data = (x_train, y_train, x_test)
-fp = open('./data_tfidf.pkl', 'wb')
-pickle.dump(data, fp)
-fp.close()
+    # =====================================================================================================================
+    # 2 特征工程-提取tfidf特征
+    # sublinear_tf 取值True表示用1+log(tf)表示tf
+    print('提取tfidf特征。。。')
+    vectorizer = TfidfVectorizer(ngram_range=(1, 2), min_df=3, max_df=0.9, sublinear_tf=True)
+    X_train = vectorizer.fit_transform(X_train)
+    X_test = vectorizer.transform(X_test)
+    t3 = time.time()
+    print('提取tfidf特征用时：{}s'.format(t3 - t2))
 
-t_end = time.time()
-print("已将原始数据数字化为tfidf特征，共耗时：{}min".format((t_end-t_start)/60))
+    # =====================================================================================================================
+    # 3 保存至本地
+    print('持久化数据。。。')
+    with open('../data/tmp/feature_tfidf.pkl', 'wb') as f:
+        pickle.dump((X_train, y_train, X_test), f)
+    t4 = time.time()
+    print('持久化数据用时：{}s'.format(t4 - t3))
+
+    print('总用时：{}s'.format(t4 - t1))
+
+
+if __name__ == '__main__':
+    """
+        加载数据。。。
+        加载数据用时：5.842896223068237s
+        提取tfidf特征。。。
+        提取tfidf特征用时：286.7960388660431s
+        持久化数据。。。
+        持久化数据用时：8.780410528182983s
+        总用时：301.4193456172943s
+    """
+    get_tfidf_feature()
