@@ -20,19 +20,19 @@ sklearn/xgboost/lightgbm<br>
 
 - 3）**使用案例**<br>
 （1）生成tfidf特征<br>
-运行features文件夹中的tfidf.py（对原始数据进行tfidf特征提取得到2095922个特征词。tfidf特征提取时，去除掉除词频≤3，大于90%的单词）；<br>
+运行features文件夹中的**tfidf.py**（对原始数据进行tfidf特征提取得到2095922个特征词。tfidf特征提取时，去除掉除词频≤3，大于90%的单词）；<br>
 （2）对特征进行嵌入式选择<br>
-运行features文件夹中的feature\_select.py(对tfidf提取的特征通过L2正则进行特征选择，得到675311个新特征)<br>
+运行features文件夹中的**feature_select.py**(对tfidf提取的特征通过L2正则进行特征选择，得到675311个新特征)<br>
 （3）生成lsa特征<br>
-运行features文件夹中的lsa.py；(对进行过特征选择的特征数据进行lsa特征提取)<br>
+运行features文件夹中的**lsa.py**；(对进行过特征选择的特征数据进行lsa特征提取)<br>
 （4）生成lda特征<br>
-运行features文件夹中的lda.py；(对进行过特征选择的特征数据进行lda特征提取)<br>
+运行features文件夹中的**lda.py**；(对进行过特征选择的特征数据进行lda特征提取)<br>
 （5）生成doc2vec特征<br>
-运行features文件夹中的doc2vec.py；(对进原始数据进行doc2vec特征提取)<br>
+运行features文件夹中的**doc2vec.py**；(对进原始数据进行doc2vec特征提取)<br>
 （6）进行特征融合<br>
-运行ensemble.py;（对提取的lda、lsa、doc2vec特征数据进行融合）<br>
+运行features文件夹中的**ensemble.py**;（对提取的lda、lsa、doc2vec特征数据进行融合）<br>
 （7）使用lgb进行训练并进行结果预测<br>
-运行code文件夹中的lgb.py；（用lightgbm对融合后的数据进行训练，最后得到预测的准确率为**76.17%**）<br>
+运行code文件夹中的**lgb.py**；（用lightgbm对融合后的数据进行训练，最后得到预测的准确率为**76.17%**）<br>
 
 - 4）**提高模型分数关键**<br>
 （1）特征工程：<br>
